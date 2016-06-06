@@ -7,18 +7,30 @@ public class CodeLine {
     private LineType type;
     private Integer lineNumber;
     private List<Integer> nextNumber;
-    CodeLine(LineType setType, Integer lineNumber) {
+    private List<CodeAction> codeActionList;
+
+    CodeLine(LineType setType, List<CodeAction> codeActionList, Integer lineNumber) {
         this.type = setType;
         this.lineNumber = lineNumber;
         this.nextNumber = new ArrayList<>();
+        if (codeActionList != null)
+            this.codeActionList =  new ArrayList<>(codeActionList);
+        else
+            this.codeActionList =  new ArrayList<>();
+
         if ((!this.getType().equals(LineType.HALT)) || (!this.getType().equals(LineType.RETURN)))
             this.nextNumber.add(lineNumber+1);
     }
 
-    CodeLine(LineType setType, Integer lineNumber, Integer jumpNumber) {
+    CodeLine(LineType setType, List<CodeAction> codeActionList, Integer lineNumber, Integer jumpNumber) {
         this.type = setType;
         this.lineNumber = lineNumber;
         this.nextNumber = new ArrayList<>();
+        if (codeActionList != null)
+            this.codeActionList =  new ArrayList<>(codeActionList);
+        else
+            this.codeActionList =  new ArrayList<>();
+
         if (this.type.equals(LineType.BRANCH))
             this.nextNumber.add(lineNumber + 1);
         this.nextNumber.add(jumpNumber);

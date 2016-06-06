@@ -3,18 +3,24 @@ package DFA;
 
 import java.util.*;
 
-public class CodeLineSplitter {
+public class CodeBlockGraphGenerator {
     private List<CodeLine> codeLines;
     private Integer currentLine;
-    public CodeLineSplitter() {
+    public CodeBlockGraphGenerator() {
         codeLines = new ArrayList<>();
         currentLine = 0;
     }
+    public void addLine(LineType lineType, List<CodeAction> codeActionList) {
+        codeLines.add(new CodeLine(lineType, codeActionList, currentLine++));
+    }
+    public void addLine(LineType lineType, List<CodeAction> codeActionList, Integer jumpLine) {
+        codeLines.add(new CodeLine(lineType, codeActionList, currentLine++, jumpLine));
+    }
     public void addLine(LineType lineType) {
-        codeLines.add(new CodeLine(lineType, currentLine++));
+        codeLines.add(new CodeLine(lineType, null, currentLine++));
     }
     public void addLine(LineType lineType, Integer jumpLine) {
-        codeLines.add(new CodeLine(lineType, currentLine++, jumpLine));
+        codeLines.add(new CodeLine(lineType, null, currentLine++, jumpLine));
     }
     //not needed? think of refactoring out
     public int getCurrentLineCount() {
@@ -48,27 +54,22 @@ public class CodeLineSplitter {
 
         int currentBlockNumber = -1;
         CodeBlockGraph newGraph = new CodeBlockGraph();
-        CodeBlockGraph disjointGraph = new CodeBlockGraph();
         for (CodeLine codeLine : codeLines) {
             if ( isBlockHead.contains(codeLine.getLineNumber()) ) {
                 currentBlockNumber++;
                 newGraph.addBlock("B" + currentBlockNumber);
-                disjointGraph.addBlock("B" + currentBlockNumber);
             }
             blockNumber.put(codeLine.getLineNumber(),currentBlockNumber);
         }
 
         currentBlockNumber = -1;
         CodeBlock currentBlock = newGraph.addBlock("START");
-        CodeBlock currentBlockDisjoint = disjointGraph.addBlock("START");
         for (CodeLine codeLine : codeLines) {
             if ( isBlockHead.contains(codeLine.getLineNumber()) ) {
                 currentBlockNumber++;
                 currentBlock = newGraph.getBlockByName("B" + currentBlockNumber);
-                currentBlockDisjoint = disjointGraph.getBlockByName("B" + currentBlockNumber);
             }
             currentBlock.addLine(codeLine);
-            currentBlockDisjoint.addLine(codeLine);
             int currentLineNumber = codeLine.getLineNumber();
             if ( isBlockHead.contains(currentLineNumber+1)) {
                 switch (codeLine.getType()) {

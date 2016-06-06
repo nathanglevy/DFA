@@ -74,7 +74,7 @@ public class CodeBlockGraphTests {
     public final void makeSimpleBlockGraph() {
         CodeBlockGraph CFG = new CodeBlockGraph();
         CodeBlock codeBlock1 = CFG.addBlock("Block1");
-        codeBlock1.addLine(LineType.BLANK, 0);
-        codeBlock1.addLine(LineType.BLANK, 1);
+        codeBlock1.addLine(LineType.BLANK, null, 0);
+        codeBlock1.addLine(LineType.BLANK, null, 1);
     }
 }

@@ -20,12 +20,12 @@ public class CodeBlock {
         codeLines.add(codeline);
     }
 
-    void addLine(LineType lineType, Integer lineNumber) {
-        codeLines.add(new CodeLine(lineType, lineNumber));
+    public void addLine(LineType lineType, List<CodeAction> codeActionList, Integer lineNumber) {
+        codeLines.add(new CodeLine(lineType, codeActionList, lineNumber));
     }
 
-    public void addLine(LineType lineType, Integer lineNumber, Integer jumpNumber) {
-        codeLines.add(new CodeLine(lineType, lineNumber, jumpNumber));
+    public void addLine(LineType lineType, List<CodeAction> codeActionList, Integer lineNumber, Integer jumpNumber) {
+        codeLines.add(new CodeLine(lineType, codeActionList, lineNumber, jumpNumber));
     }
 
     public int getSize() {

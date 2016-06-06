@@ -1,8 +1,7 @@
 package Testing;
 
-import DFA.CodeBlock;
 import DFA.CodeBlockGraph;
-import DFA.CodeLineSplitter;
+import DFA.CodeBlockGraphGenerator;
 import DFA.LineType;
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,10 +9,10 @@ import Graph.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CodeLineSplitterTests {
+public class CodeBlockGraphGeneratorTests {
     @Test
     public final void makeCodeLineSplitter() {
-        CodeLineSplitter lineSplitter = new CodeLineSplitter();
+        CodeBlockGraphGenerator lineSplitter = new CodeBlockGraphGenerator();
         lineSplitter.addLine(LineType.BLANK);
         lineSplitter.addLine(LineType.BLANK);
         lineSplitter.addLine(LineType.BLANK);
@@ -26,7 +25,7 @@ public class CodeLineSplitterTests {
 
     @Test
     public final void makeCodeLineSplitBlocks() {
-        CodeLineSplitter lineSplitter = new CodeLineSplitter();
+        CodeBlockGraphGenerator lineSplitter = new CodeBlockGraphGenerator();
         lineSplitter.addLine(LineType.BLANK); //1 <-start
         lineSplitter.addLine(LineType.BLANK); //1 <- branched to
         lineSplitter.addLine(LineType.BRANCH, 1); //2 #END
@@ -47,7 +46,7 @@ public class CodeLineSplitterTests {
 
     @Test
     public final void makeCodeLineSplitWithJAL() {
-        CodeLineSplitter lineSplitter = new CodeLineSplitter();
+        CodeBlockGraphGenerator lineSplitter = new CodeBlockGraphGenerator();
         lineSplitter.addLine(LineType.BLANK); //1 <-start B0            //0
         lineSplitter.addLine(LineType.BLANK); //1 <- branched to B1     //1
         lineSplitter.addLine(LineType.BRANCH, 1); //2 #END of B1        //2
