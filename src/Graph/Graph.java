@@ -24,7 +24,7 @@ public class Graph {
     }
 
     public List<Vertex> getVertexList() {
-        return vertexList;
+        return new ArrayList<>(vertexList);
     }
 
     public boolean doesVertexExist(String name) {
@@ -93,7 +93,7 @@ public class Graph {
         if (!this.doesVertexExist(vertex)) {
             throw new RuntimeException("Vertex: " + vertex + " does not exist");
         }
-        return vertex.getNeighbours();
+        return new ArrayList<>(vertex.getNeighbours());
     }
 
     public List<String> getNeighboursNames(String vertexName) {
