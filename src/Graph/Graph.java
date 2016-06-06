@@ -130,18 +130,17 @@ public class Graph {
             throw new RuntimeException("Vertex: " + target + " does not exist");
         }
 
-        System.out.println("Currently beginning Vertex Connect");
+        //System.out.println("Currently beginning Vertex Connect");
 
         List<Vertex> toVisit = new ArrayList<>();
         toVisit.add(vertex);
         List<Vertex> visited = new ArrayList<>();
-        boolean done = false;
         while (toVisit.size() > 0) {
-            System.out.println("Visited: " + visited + " to Visit: " + toVisit);
+            //System.out.println("Visited: " + visited + " to Visit: " + toVisit);
             List<Vertex> currentVisit = new ArrayList<>(toVisit);
             toVisit.clear();
             for (Vertex neighbor : currentVisit) {
-                System.out.println("Currently visiting: " + neighbor.getName());
+                //System.out.println("Currently visiting: " + neighbor.getName());
                 if (neighbor.equals(target)) {
                     return true;
                 }
@@ -149,7 +148,7 @@ public class Graph {
                     continue;
                 } else {
                     for (Vertex neighborsChildren : neighbor.getNeighbours()) {
-                        System.out.println("Children are: " + neighborsChildren.getName());
+                        //System.out.println("Children are: " + neighborsChildren.getName());
                         if ((!toVisit.contains(neighborsChildren)) && (!visited.contains(neighborsChildren))) {
                             toVisit.add(neighborsChildren);
                         }
@@ -159,5 +158,54 @@ public class Graph {
             }
         }
         return false;
+    }
+
+    public Graph getReverseGraph() {
+        Graph reversed = new Graph();
+        for (Vertex vertex : vertexList) {
+            reversed.addVertex(vertex.getName());
+        }
+        for (Vertex vertex : vertexList) {
+            List<String> adjacent = this.getNeighboursNames(vertex);
+            for (String source : adjacent) {
+                reversed.connectVertices(source, vertex.getName());
+            }
+        }
+        return reversed;
+    }
+
+
+    public List<String> getConnectedVerticesNames(Vertex sourceVertex) {
+        List<String> vertexNames = new ArrayList<>();
+        for (Vertex vertex : vertexList) {
+            if (areVerticesConnected(vertex,sourceVertex)) {
+                vertexNames.add(vertex.getName());
+            }
+        }
+        return vertexNames;
+    }
+
+    public List<String> getConnectedVerticesNames(String sourceVertexName) {
+        if (doesVertexExist(sourceVertexName)) {
+            return getConnectedVerticesNames(getVertexByName(sourceVertexName));
+        } else {
+            throw new RuntimeException("Vertex: " + sourceVertexName + " does not exist!");
+        }
+    }
+
+    public boolean isIdenticalTo(Graph otherGraph) {
+        for (Vertex vertex : vertexList) {
+            if (!otherGraph.doesVertexExist(vertex.getName()))
+                return false;
+            if (!getNeighboursNames(vertex).containsAll(otherGraph.getNeighboursNames(vertex.getName())))
+                return false;
+        }
+        for (String vertexName : otherGraph.getVertexNameList()) {
+            if (!doesVertexExist(vertexName))
+                return false;
+            if (!otherGraph.getNeighboursNames(vertexName).containsAll(getNeighboursNames(vertexName)))
+                return false;
+        }
+        return true;
     }
 }

@@ -16,11 +16,11 @@ public class CodeBlock {
         return this.name;
     }
 
-    public void addLine(CodeLine codeline) {
+    void addLine(CodeLine codeline) {
         codeLines.add(codeline);
     }
 
-    public void addLine(LineType lineType, Integer lineNumber) {
+    void addLine(LineType lineType, Integer lineNumber) {
         codeLines.add(new CodeLine(lineType, lineNumber));
     }
 
@@ -30,5 +30,9 @@ public class CodeBlock {
 
     public int getSize() {
         return codeLines.size();
+    }
+
+    public List<CodeLine> getCodeLines() {
+        return new ArrayList<>(codeLines);
     }
 }

@@ -11,7 +11,8 @@ public class CodeLine {
         this.type = setType;
         this.lineNumber = lineNumber;
         this.nextNumber = new ArrayList<>();
-        this.nextNumber.add(lineNumber+1);
+        if ((!this.getType().equals(LineType.HALT)) || (!this.getType().equals(LineType.RETURN)))
+            this.nextNumber.add(lineNumber+1);
     }
 
     CodeLine(LineType setType, Integer lineNumber, Integer jumpNumber) {

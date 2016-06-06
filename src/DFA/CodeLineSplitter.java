@@ -31,8 +31,11 @@ public class CodeLineSplitter {
         for (CodeLine codeLine : codeLines) {
             switch (codeLine.getType()) {
                 case BLANK: break;
+                case JAL:   isBlockHead.add(codeLine.getLineNumber()+1); //JAL is special
                 case BRANCH:
                 case JUMP:
+                case HALT:
+                case RETURN:
                     for (Integer nextLineNumber : codeLine.getNextNumber()) {
                         isBlockHead.add(nextLineNumber);
                     }
@@ -45,22 +48,27 @@ public class CodeLineSplitter {
 
         int currentBlockNumber = -1;
         CodeBlockGraph newGraph = new CodeBlockGraph();
+        CodeBlockGraph disjointGraph = new CodeBlockGraph();
         for (CodeLine codeLine : codeLines) {
             if ( isBlockHead.contains(codeLine.getLineNumber()) ) {
                 currentBlockNumber++;
                 newGraph.addBlock("B" + currentBlockNumber);
+                disjointGraph.addBlock("B" + currentBlockNumber);
             }
             blockNumber.put(codeLine.getLineNumber(),currentBlockNumber);
         }
 
         currentBlockNumber = -1;
         CodeBlock currentBlock = newGraph.addBlock("START");
+        CodeBlock currentBlockDisjoint = disjointGraph.addBlock("START");
         for (CodeLine codeLine : codeLines) {
             if ( isBlockHead.contains(codeLine.getLineNumber()) ) {
                 currentBlockNumber++;
                 currentBlock = newGraph.getBlockByName("B" + currentBlockNumber);
+                currentBlockDisjoint = disjointGraph.getBlockByName("B" + currentBlockNumber);
             }
             currentBlock.addLine(codeLine);
+            currentBlockDisjoint.addLine(codeLine);
             int currentLineNumber = codeLine.getLineNumber();
             if ( isBlockHead.contains(currentLineNumber+1)) {
                 switch (codeLine.getType()) {
@@ -69,7 +77,8 @@ public class CodeLineSplitter {
                         for (Integer nextLine : codeLine.getNextNumber()) {
                             newGraph.connectBlocks(currentBlock.getName(), "B" + blockNumber.get(nextLine));
                         }
-                        break;
+                    case JAL:
+                    case RETURN:
                     case HALT: break;
                     default: newGraph.connectBlocks(currentBlock.getName(), "B" + blockNumber.get(currentLineNumber+1));
                         break;
@@ -77,6 +86,42 @@ public class CodeLineSplitter {
             }
         }
 
+        //create returnList map for RETURN jumps
+        Map<String,List<String>> returnList = new HashMap<>();
+        for (CodeLine codeLine : codeLines) {
+            if (codeLine.getType().equals(LineType.JAL)) {
+                for (Integer nextNumber : codeLine.getNextNumber()) {
+                    if (!returnList.containsKey("B" + blockNumber.get(nextNumber))) {
+                        returnList.put("B" + blockNumber.get(nextNumber), new ArrayList<String>());
+                    }
+                    returnList.get("B" + blockNumber.get(nextNumber)).add("B" + blockNumber.get(codeLine.getLineNumber()+1));
+                }
+            }
+        }
+
+        //propogate the return links
+        for (String returnBlock : returnList.keySet()) {
+            List<String> connectedVertices = newGraph.connectionGraph.getConnectedVerticesNames(returnBlock);
+            for (String vertex : connectedVertices) {
+                List<CodeLine> codeLines = newGraph.getBlockByName(vertex).getCodeLines();
+                for (CodeLine codeLine : codeLines) {
+                    if (codeLine.getType().equals(LineType.RETURN)) {
+                        for (String destination : returnList.get(returnBlock)) {
+                            newGraph.connectBlocks(vertex,destination);
+                        }
+                    }
+                }
+            }
+        }
+
+        //now link returns and jals
+        for (CodeLine codeLine : codeLines) {
+            if (codeLine.getType().equals(LineType.JAL)) {
+                for (Integer nextNumber : codeLine.getNextNumber()) {
+                    newGraph.connectBlocks("B" + blockNumber.get(codeLine.getLineNumber()), "B" + blockNumber.get(nextNumber));
+                }
+            }
+        }
         return newGraph;
     }
 }

@@ -6,7 +6,7 @@ import Graph.*;
 
 public class CodeBlockGraph {
     private List<CodeBlock> codeBlockList;
-    private Graph connectionGraph;
+    Graph connectionGraph;
     public CodeBlockGraph() {
         codeBlockList = new ArrayList<>();
         connectionGraph = new Graph();
@@ -61,5 +61,18 @@ public class CodeBlockGraph {
 
     public void connectBlocks(String blockNameA, String blockNameB) {
         connectionGraph.connectVertices(blockNameA,blockNameB);
+    }
+
+    public List<String> getConnectedCodeBlockNames(String codeBlockName) {
+        List<String> codeBlockNames = new ArrayList<>();
+        for (String neighbours : connectionGraph.getNeighboursNames(codeBlockName)) {
+            codeBlockNames.add(neighbours);
+        }
+        return codeBlockNames;
+    }
+
+    //TODO: fix this so that it COPIES the graph!
+    public Graph getBlockGraphRep() {
+        return connectionGraph;
     }
 }
