@@ -1,11 +1,19 @@
 package DFA;
 
 public class CodeAction {
-    enum ActionType {WRITE,READ}
-    ActionType actionType;
-    String destination;
-    CodeAction(ActionType actionType, String destination) {
+    public enum ActionType {WRITE,READ}
+    private ActionType actionType;
+    private String field;
+    public CodeAction(ActionType actionType, String field) {
         this.actionType = actionType;
-        this.destination = destination;
+        this.field = field;
+    }
+
+    ActionType getActionType() {
+        return actionType;
+    }
+
+    String getField() {
+        return field;
     }
 }

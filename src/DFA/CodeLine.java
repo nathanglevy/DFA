@@ -9,7 +9,7 @@ public class CodeLine {
     private List<Integer> nextNumber;
     private List<CodeAction> codeActionList;
 
-    CodeLine(LineType setType, List<CodeAction> codeActionList, Integer lineNumber) {
+    public CodeLine(LineType setType, List<CodeAction> codeActionList, Integer lineNumber) {
         this.type = setType;
         this.lineNumber = lineNumber;
         this.nextNumber = new ArrayList<>();
@@ -39,13 +39,14 @@ public class CodeLine {
         }
     }
 
-    public LineType getType() {
+    LineType getType() {
         return type;
     }
-    public Integer getLineNumber() {
+    Integer getLineNumber() {
         return lineNumber;
     }
-    public List<Integer> getNextNumber() {
+    List<Integer> getNextNumber() {
         return new ArrayList<>(nextNumber);
     }
+    List<CodeAction> getCodeActionList() { return new ArrayList<>(codeActionList); }
 }

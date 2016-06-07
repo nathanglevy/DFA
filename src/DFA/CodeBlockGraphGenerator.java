@@ -10,6 +10,13 @@ public class CodeBlockGraphGenerator {
         codeLines = new ArrayList<>();
         currentLine = 0;
     }
+    public CodeBlockGraphGenerator(List<CodeLine> codeLinesList) {
+        codeLines = new ArrayList<>(codeLinesList);
+        currentLine = codeLines.size();
+    }
+    public void addLine(CodeLine codeLine) {
+        codeLines.add(codeLine);
+    }
     public void addLine(LineType lineType, List<CodeAction> codeActionList) {
         codeLines.add(new CodeLine(lineType, codeActionList, currentLine++));
     }
@@ -29,6 +36,12 @@ public class CodeBlockGraphGenerator {
     public int getCurrentLine() {
         return currentLine;
     }
+
+    static public CodeBlockGraph analyzeCode(List<CodeLine> codeLines) {
+        CodeBlockGraphGenerator cbgg = new CodeBlockGraphGenerator(codeLines);
+        return cbgg.analyzeCode();
+    }
+
     public CodeBlockGraph analyzeCode() {
         Map<Integer,Integer> blockNumber = new HashMap<>();
         Set<Integer> isBlockHead = new HashSet<>();
